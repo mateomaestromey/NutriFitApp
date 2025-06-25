@@ -50,16 +50,15 @@ fun NutriFitDetailScreen(
             Image(
                 painter = painterResource(id = R.drawable.logo_nutrifit),
                 contentDescription = "NutriFit Logo",
-                modifier = Modifier
-                    .height(80.dp)
+                modifier = Modifier.height(80.dp)
             )
 
             Spacer(modifier = Modifier.height(16.dp))
 
             // Imagen grande
             AsyncImage(
-                model = product.imagen,
-                contentDescription = product.nombre,
+                model = product.imagen ?: "",
+                contentDescription = product.nombre ?: "Producto sin nombre",
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .fillMaxWidth()
@@ -83,7 +82,7 @@ fun NutriFitDetailScreen(
                 ) {
                     // Nombre
                     Text(
-                        text = product.nombre,
+                        text = product.nombre ?: "Sin nombre",
                         fontSize = 24.sp,
                         fontWeight = FontWeight.Bold,
                         color = Color(0xFF204E4A)
@@ -94,19 +93,19 @@ fun NutriFitDetailScreen(
                     // Información nutricional
                     NutritionalInfoRow(
                         icon = R.drawable.icono_calorias,
-                        label = "${product.nutriments.calorias.toInt()} calorías"
+                        label = "${product.nutriments?.calorias?.toInt() ?: 0} calorías"
                     )
                     NutritionalInfoRow(
                         icon = R.drawable.icono_proteina,
-                        label = "${product.nutriments.proteinas.toInt()} gramos de proteína"
+                        label = "${product.nutriments?.proteinas?.toInt() ?: 0} gramos de proteína"
                     )
                     NutritionalInfoRow(
                         icon = R.drawable.icono_carbohidratos,
-                        label = "${product.nutriments.carbohidratos.toInt()} gramos de carbs"
+                        label = "${product.nutriments?.carbohidratos?.toInt() ?: 0} gramos de carbs"
                     )
                     NutritionalInfoRow(
                         icon = R.drawable.icono_grasas,
-                        label = "${product.nutriments.grasas.toInt()} gramos de grasas"
+                        label = "${product.nutriments?.grasas?.toInt() ?: 0} gramos de grasas"
                     )
                 }
             }

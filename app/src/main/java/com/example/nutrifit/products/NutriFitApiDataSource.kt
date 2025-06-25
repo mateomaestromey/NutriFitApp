@@ -1,8 +1,10 @@
 package com.example.nutrifit.products
 
 import android.util.Log
+import com.google.firebase.firestore.FirebaseFirestore
 import okio.IOException
 import retrofit2.HttpException
+import kotlinx.coroutines.tasks.await
 
 class NutriFitApiDataSource : INutriFitDataSource{
 
@@ -32,6 +34,23 @@ class NutriFitApiDataSource : INutriFitDataSource{
     }
 
     override suspend fun getNutriFitById(nutriFitId: String): NutriFit {
-        return RetrofitInstance.nutriFitApi.getNutriFit(nutriFitId).product
+
+
+        Log.d("NUTRIFITDB", "getNutriFitById")
+
+        val db = FirebaseFirestore.getInstance()
+
+        var nutriFitResult = db.collection("Favoritos").document(nutriFitId.toString()).get().await()
+        var nutriFit = nutriFitResult.toObject(NutriFit::class.java)
+        if (nutriFit != null) {
+            Log.d("NUTRIFITDB", "encontrado en Firestore")
+            return nutriFit
+        }
+        else {
+            Log.d("NUTRIFITDB", "no encontrado en Firestore")
+            nutriFit = RetrofitInstance.nutriFitApi.getNutriFit(nutriFitId).product
+            db.collection("Favoritos").document(nutriFitId.toString()).set(nutriFit)
+            return nutriFit
+        }
     }
 }

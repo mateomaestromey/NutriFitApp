@@ -12,28 +12,28 @@ data class NutriFitDetailResult(
 
 data class NutriFit (
     @SerializedName("code")
-    val id : String,
+    val id : String = "",
     @SerializedName("product_name_es")
-    val nombre: String,
+    val nombre: String = "",
     @SerializedName("image_url")
-    val imagen : String,
+    val imagen : String = "",
 
-    val nutriments : Nutriments
+    val nutriments : Nutriments = Nutriments(calorias = 0f, proteinas = 0f, carbohidratos = 0f, grasas = 0f)
 
 )
 
 data class Nutriments(
     @SerializedName("energy-kcal_100g")
-    val calorias : Float,
+    val calorias : Float = 0f,
 
     @SerializedName("proteins_100g")
-    val proteinas : Float,
+    val proteinas : Float = 0f,
 
     @SerializedName("carbohydrates_100g")
-    val carbohidratos : Float,
+    val carbohidratos : Float = 0f,
 
     @SerializedName("fat_100g")
-    val grasas : Float
+    val grasas : Float = 0f
 )
 
 fun emptyNutriFit() : NutriFit{

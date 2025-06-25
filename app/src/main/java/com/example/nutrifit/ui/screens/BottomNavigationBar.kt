@@ -19,7 +19,7 @@ data class BottomNavItem(val label: String, val route: String, val iconResId: In
 fun BottomNavigationBar(navController: NavHostController) {
     val items = listOf(
         BottomNavItem("Home", Screens.NutriFitList.route, R.drawable.logo_hoja),
-        BottomNavItem("Favorites", Screens.ComingSoon.route, R.drawable.logo_favs),
+        BottomNavItem("Favorites", Screens.Favoritos.route, R.drawable.logo_favs),
         BottomNavItem("Profile", Screens.Profile.route, R.drawable.logo_user) // 👈 Ahora va a Profile
     )
 

@@ -12,6 +12,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import com.example.nutrifit.products.Usuario
 import com.example.nutrifit.ui.screens.BottomNavigationBar
 import com.example.nutrifit.ui.screens.NavigationStack
 import com.example.nutrifit.ui.screens.Screens
@@ -22,6 +23,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.firestore.FirebaseFirestore
 
 class MainActivity : ComponentActivity() {
 
@@ -37,6 +39,28 @@ class MainActivity : ComponentActivity() {
                 FirebaseAuth.getInstance().signInWithCredential(credential)
                     .addOnCompleteListener { authResult ->
                         if (authResult.isSuccessful) {
+                            val user = FirebaseAuth.getInstance().currentUser
+                            val db = FirebaseFirestore.getInstance()
+
+                            if (user != null) {
+                                val usuario = Usuario(
+                                    uid = user.uid,
+                                    nombre = user.displayName ?: "",
+                                    email = user.email ?: ""
+                                )
+
+                                val docRef = db.collection("usuarios").document(user.uid)
+
+                                docRef.get().addOnSuccessListener { snapshot ->
+                                    if (!snapshot.exists()) {
+                                        docRef.set(usuario)
+                                    } else {
+                                        Log.d("LOGIN", "El usuario ya existía, no se sobrescribió.")
+                                    }
+                                }
+                            }
+
+                            // Navegar a la pantalla principal
                             navController.navigate(Screens.NutriFitList.route) {
                                 popUpTo(Screens.Login.route) { inclusive = true }
                             }
@@ -75,7 +99,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     bottomBar = {
                         if (showBottomBar) {
-                            BottomNavigationBar(navController) // ✅ Solo en pantallas que queremos
+                            BottomNavigationBar(navController)
                         }
                     }
                 ) { innerPadding ->

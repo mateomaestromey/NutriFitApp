@@ -8,21 +8,35 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.nutrifit.R
+import com.example.nutrifit.ui.screens.Screens
 
 @Composable
 fun LoginScreen(
     onGoogleLoginClick: () -> Unit,
     modifier: Modifier = Modifier,
-    navController: NavHostController
+    navController: NavHostController,
+    vm: LoginScreenViewModel = viewModel()
 
 ){
+
+    LaunchedEffect(Unit) {
+        vm.uiEvent.collect{
+            event ->
+            navController.navigate(Screens.NutriFitList.route){
+                popUpTo(Screens.Login.route) {inclusive = true }
+            }
+        }
+    }
+
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = Color(0xFFFAF9F6) // Fondo general crema claro

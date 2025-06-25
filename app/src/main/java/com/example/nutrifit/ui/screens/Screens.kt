@@ -6,6 +6,8 @@ sealed class Screens(val route: String) {
     object NutriFitDetail : Screens("nutrifit_detail_screen")
     object Login : Screens("login_screen")
     object ComingSoon : Screens("coming_soon_screen")
-    object Profile : Screens("profile_screen") // 👈 AGREGADO
+    object Profile : Screens("profile_screen")
+    object Favoritos : Screens("favoritos_screen")
+
 }
 

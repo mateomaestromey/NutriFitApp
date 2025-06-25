@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import com.example.nutrifit.R
+import com.example.nutrifit.ui.favoritos.FavoritosViewModel
 import com.example.nutrifit.ui.screens.Screens
 import com.example.nutrifit.ui.screens.commons.NutriFitUiList
 
@@ -27,7 +28,8 @@ import com.example.nutrifit.ui.screens.commons.NutriFitUiList
 fun NutriFitListScreen(
     modifier: Modifier = Modifier,
     vm: NutriFitListScreenViewModel = viewModel(),
-    navController: NavHostController
+    navController: NavHostController,
+    favoritosViewModel: FavoritosViewModel = viewModel()
 ) {
     Column(
         modifier = Modifier
@@ -35,7 +37,6 @@ fun NutriFitListScreen(
             .background(Color(0xFFFAF9F6)) // fondo crema
             .padding(horizontal = 16.dp, vertical = 8.dp)
     ) {
-        // Logo NutriFit
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Center
@@ -43,14 +44,12 @@ fun NutriFitListScreen(
             Image(
                 painter = painterResource(id = R.drawable.logo_nutrifit),
                 contentDescription = "Logo NutriFit",
-                modifier = Modifier
-                    .height(150.dp)
+                modifier = Modifier.height(150.dp)
             )
         }
 
         Spacer(modifier = Modifier.height(0.dp))
 
-        // Buscador + Botón Buscar
         SearchBarWithButton(
             query = vm.uiState.searchQuery,
             onQueryChanged = { vm.searchChange(it) },
@@ -69,25 +68,23 @@ fun NutriFitListScreen(
 
         Spacer(modifier = Modifier.height(16.dp))
 
-        // 👇 Aca va el cambio:
         if (vm.uiState.isLoading) {
-            // Mostrar el spinner mientras carga
             Box(
-                modifier = Modifier
-                    .fillMaxSize(),
+                modifier = Modifier.fillMaxSize(),
                 contentAlignment = Alignment.Center
             ) {
                 CircularProgressIndicator(color = Color(0xFF264D48))
             }
         } else {
-            // Cuando termina de cargar, mostrar la lista
-            NutriFitUiList(vm.uiState.nutriFitList, Modifier.fillMaxSize()) { id ->
-                navController.navigate(Screens.NutriFitDetail.route + "/$id")
-            }
+            NutriFitUiList(
+                list = vm.uiState.nutriFitList,
+                modifier = Modifier.fillMaxSize(),
+                onClick = { id -> navController.navigate(Screens.NutriFitDetail.route + "/$id") },
+                favoritosViewModel = favoritosViewModel
+            )
         }
     }
 }
-
 
 @Composable
 fun SearchBarWithButton(
@@ -125,10 +122,7 @@ fun SearchBarWithButton(
                         .padding(start = 8.dp, end = 12.dp),
                     decorationBox = { innerTextField ->
                         if (query.isEmpty()) {
-                            Text(
-                                text = "Buscar...",
-                                color = Color.Gray
-                            )
+                            Text(text = "Buscar...", color = Color.Gray)
                         }
                         innerTextField()
                     }
@@ -141,12 +135,7 @@ fun SearchBarWithButton(
             shape = RoundedCornerShape(24.dp),
             colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2C3E50))
         ) {
-            Text(
-                text = "Buscar",
-                color = Color.White
-            )
+            Text(text = "Buscar", color = Color.White)
         }
     }
 }
-
-

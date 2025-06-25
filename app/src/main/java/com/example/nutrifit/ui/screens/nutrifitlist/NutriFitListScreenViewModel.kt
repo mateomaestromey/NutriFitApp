@@ -9,6 +9,8 @@ import androidx.lifecycle.viewModelScope
 import com.example.nutrifit.domain.INutriFitRepository
 import com.example.nutrifit.products.NutriFit
 import com.example.nutrifit.products.NutriFitRepository
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import java.io.IOException
@@ -63,4 +65,18 @@ class NutriFitListScreenViewModel(
         uiState = uiState.copy(searchQuery = search)
         fetchNutriFit()
     }
+
+    fun agregarAFavoritos(producto: NutriFit) {
+        val db = FirebaseFirestore.getInstance()
+        val userId = FirebaseAuth.getInstance().currentUser?.uid
+
+        userId?.let {
+            db.collection("usuarios")
+                .document(it)
+                .collection("favoritos")
+                .document(producto.id)
+                .set(producto)
+        }
+    }
+
 }

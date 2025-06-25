@@ -18,8 +18,8 @@ import com.example.nutrifit.R
 @Composable
 fun ProfileScreen(
     modifier: Modifier = Modifier,
-    userName: String = "Nombre de usuario",
-    userEmail: String = "@correo.gmail.com",
+    userName: String,
+    userEmail: String,
     onLogoutClick: () -> Unit
 ) {
     Box(

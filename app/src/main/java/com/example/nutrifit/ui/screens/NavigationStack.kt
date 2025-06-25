@@ -12,6 +12,8 @@ import com.example.nutrifit.ui.screens.nutrifitdetail.NutriFitDetailScreen
 import com.example.nutrifit.ui.screens.nutrifitlist.NutriFitListScreen
 import com.example.nutrifit.ui.screens.splash.SplashScreen
 import com.example.nutrifit.ui.screens.comingsoon.ComingSoonScreen
+import com.example.nutrifit.ui.screens.profile.ProfileRoute
+import com.example.nutrifit.ui.favoritos.FavoritosScreen
 
 import com.example.nutrifit.ui.screens.profile.ProfileScreen
 
@@ -42,15 +44,11 @@ fun NavigationStack(
         composable(route = Screens.ComingSoon.route) {
             ComingSoonScreen()
         }
-        composable(route = Screens.Profile.route) { // 👈 NUEVO
-            ProfileScreen(
-                onLogoutClick = {
-                    // Esto te puede llevar al Login cuando cierre sesión
-                    navController.navigate(Screens.Login.route) {
-                        popUpTo(0) // Limpia la pila
-                    }
-                }
-            )
+        composable(route = Screens.Profile.route) {
+            ProfileRoute(navController = navController)
+        }
+        composable(route = Screens.Favoritos.route) {
+            FavoritosScreen(navController = navController)
         }
     }
 }
