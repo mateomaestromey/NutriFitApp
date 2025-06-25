@@ -13,6 +13,8 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.example.nutrifit.products.Usuario
+import com.example.nutrifit.products.local.NutriFitDataBase
+import com.example.nutrifit.products.local.NutriFitDataBaseProvider
 import com.example.nutrifit.ui.screens.BottomNavigationBar
 import com.example.nutrifit.ui.screens.NavigationStack
 import com.example.nutrifit.ui.screens.Screens
@@ -74,6 +76,8 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
+
+        NutriFitDataBaseProvider.createDataBase(this)
 
         googleSignInClient = GoogleSignIn.getClient(
             this,

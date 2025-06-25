@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     id("com.google.gms.google-services")
+    kotlin("kapt")
 }
 
 android {
@@ -67,6 +68,17 @@ dependencies {
     implementation(libs.firebase.firestore)
     implementation(libs.google.firebase.bom)
     implementation(libs.google.firebase.auth)
+    implementation(libs.androidx.room.common)
+    implementation(libs.androidx.room.compiler) {
+        exclude(group = "com.intellij", module="annotations")
+    }
+    implementation(libs.androidx.room.ktx)
+    implementation(libs.androidx.room.migration)
+    implementation(libs.androidx.room.runtime)
+    {
+        exclude(group = "com.intellij", module="annotations")
+    }
+
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
@@ -74,4 +86,6 @@ dependencies {
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
+    kapt(libs.androidx.room.compiler)
+
 }

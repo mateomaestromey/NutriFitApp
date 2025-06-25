@@ -34,7 +34,7 @@ class NutriFitListScreenViewModel(
             try {
                 uiState = uiState.copy(isLoading = true) // 👈 Loading empieza
                 val list = nutriFitRepository.fetchNutriFits("")
-                initialList = list.take(5)
+                initialList = list.take(10)
                 uiState = uiState.copy(nutriFitList = initialList, isLoading = false) // 👈 Loading termina
             } catch (e: IOException) {
                 Log.e("NutriFitApp", "Error cargando lista inicial")

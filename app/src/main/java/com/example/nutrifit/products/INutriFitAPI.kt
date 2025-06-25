@@ -11,7 +11,7 @@ interface INutriFitAPI {
         @Query("search_simple") searchSimple: Int = 1,
         @Query("action") action: String = "process",
         @Query("json") json: Int = 1,
-        @Query("page_size") pageSize : Int = 5
+        @Query("page_size") pageSize : Int = 10
     ) : NutriFitResult
 
     @GET("api/v0/product/{code}.json")
