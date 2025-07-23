@@ -15,22 +15,15 @@ import androidx.navigation.NavHostController
 import com.example.nutrifit.products.NutriFit
 import com.example.nutrifit.ui.screens.Screens
 import com.example.nutrifit.ui.screens.commons.NutriFitUiList
+import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun FavoritosScreen(
     favoritosViewModel: FavoritosViewModel = viewModel(),
     navController: NavHostController
 ) {
-    var listaFavoritos by remember { mutableStateOf<List<NutriFit>>(emptyList()) }
-    var isLoading by remember { mutableStateOf(true) }
-
-    LaunchedEffect(Unit) {
-        isLoading = true
-        favoritosViewModel.getProductosFavoritos { productos ->
-            listaFavoritos = productos
-            isLoading = false
-        }
-    }
+    val listaFavoritos by favoritosViewModel.productosFavoritos.collectAsState()
+    val isLoading by favoritosViewModel.isLoading.collectAsState()
 
     Column(
         modifier = Modifier

@@ -3,7 +3,9 @@ package com.example.nutrifit.ui.screens.profile
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -15,7 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.nutrifit.R
-import com.example.nutrifit.products.NutriFit
+import com.example.nutrifit.products.ConsejosDataSource
 import com.example.nutrifit.ui.favoritos.FavoritosViewModel
 import com.example.nutrifit.ui.screens.commons.NutriFitUiList
 
@@ -27,15 +29,12 @@ fun ProfileScreen(
     onLogoutClick: () -> Unit,
     favoritosViewModel: FavoritosViewModel = viewModel()
 ) {
-    var listaFavoritos by remember { mutableStateOf<List<NutriFit>>(emptyList()) }
-    var isLoading by remember { mutableStateOf(true) }
+    val listaFavoritos by favoritosViewModel.productosFavoritos.collectAsState()
+    val isLoading by favoritosViewModel.isLoading.collectAsState()
+    val scrollState = rememberScrollState()
 
-    LaunchedEffect(Unit) {
-        isLoading = true
-        favoritosViewModel.getProductosFavoritos { productos ->
-            listaFavoritos = productos
-            isLoading = false
-        }
+    var consejoActual by remember {
+        mutableStateOf("Presioná el botón para recibir tu consejo de salud y empezar a cuidarte 😋🍓")
     }
 
     Box(
@@ -47,6 +46,7 @@ fun ProfileScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
                 .fillMaxSize()
+                .verticalScroll(scrollState)
                 .padding(horizontal = 24.dp, vertical = 16.dp)
         ) {
             Image(
@@ -94,7 +94,7 @@ fun ProfileScreen(
             Spacer(modifier = Modifier.height(32.dp))
 
             Text(
-                text = "Comidas Favoritas",
+                text = "Alimentos Favoritos",
                 style = MaterialTheme.typography.titleMedium,
                 color = Color(0xFF264D48)
             )
@@ -128,7 +128,7 @@ fun ProfileScreen(
                             )
                             Spacer(modifier = Modifier.height(16.dp))
                             Text(
-                                text = "Estamos trabajando en esto\npronto lo tendrás",
+                                text = "Aún no guardaste ningún alimento",
                                 fontSize = 16.sp,
                                 color = Color.Black,
                                 lineHeight = 22.sp,
@@ -146,6 +146,59 @@ fun ProfileScreen(
                     }
                 }
             }
+
+            Spacer(modifier = Modifier.height(32.dp))
+
+            Text(
+                text = "Consejo Aleatorio",
+                style = MaterialTheme.typography.titleMedium,
+                color = Color(0xFF264D48)
+            )
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Card(
+                shape = RoundedCornerShape(24.dp),
+                colors = CardDefaults.cardColors(containerColor = Color.White),
+                elevation = CardDefaults.cardElevation(8.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 8.dp)
+            ) {
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .padding(24.dp)
+                ) {
+                    Text(
+                        text = consejoActual,
+                        fontSize = 16.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = Color.Black,
+                        lineHeight = 22.sp
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+            Button(
+                onClick = {
+                    consejoActual = ConsejosDataSource.random()
+                },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = Color(0xFF264D48),
+                    contentColor = Color.White
+                ),
+                shape = RoundedCornerShape(12.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(50.dp)
+            ) {
+                Text(text = "Nuevo Consejo")
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
         }
     }
 }

@@ -34,7 +34,7 @@ class NutriFitListScreenViewModel(
             try {
                 uiState = uiState.copy(isLoading = true) // 👈 Loading empieza
                 val list = nutriFitRepository.fetchNutriFits("")
-                initialList = list.take(10)
+                initialList = list.take(5)
                 uiState = uiState.copy(nutriFitList = initialList, isLoading = false) // 👈 Loading termina
             } catch (e: IOException) {
                 Log.e("NutriFitApp", "Error cargando lista inicial")
@@ -66,17 +66,5 @@ class NutriFitListScreenViewModel(
         fetchNutriFit()
     }
 
-    fun agregarAFavoritos(producto: NutriFit) {
-        val db = FirebaseFirestore.getInstance()
-        val userId = FirebaseAuth.getInstance().currentUser?.uid
-
-        userId?.let {
-            db.collection("usuarios")
-                .document(it)
-                .collection("favoritos")
-                .document(producto.id)
-                .set(producto)
-        }
-    }
 
 }

@@ -78,6 +78,9 @@ dependencies {
     {
         exclude(group = "com.intellij", module="annotations")
     }
+    implementation(libs.com.google.firebase.firebase.bom)
+    implementation(libs.com.google.firebase.firebase.auth)
+    implementation(libs.gms.google.services)
 
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)

@@ -14,6 +14,8 @@ import com.example.nutrifit.ui.screens.splash.SplashScreen
 import com.example.nutrifit.ui.screens.comingsoon.ComingSoonScreen
 import com.example.nutrifit.ui.screens.profile.ProfileRoute
 import com.example.nutrifit.ui.favoritos.FavoritosScreen
+import com.example.nutrifit.ui.screens.register.RegisterScreen
+
 
 import com.example.nutrifit.ui.screens.profile.ProfileScreen
 
@@ -33,6 +35,9 @@ fun NavigationStack(
         }
         composable(route = Screens.Login.route){
             LoginScreen(onGoogleLoginClick, navController = navController)
+        }
+        composable(route = Screens.Register.route) {
+            RegisterScreen(navController = navController)
         }
         composable(route = Screens.NutriFitList.route) {
             NutriFitListScreen(navController = navController)

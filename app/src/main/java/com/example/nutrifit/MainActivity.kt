@@ -93,7 +93,8 @@ class MainActivity : ComponentActivity() {
             NutriFitTheme {
                 val hideBottomBarRoutes = listOf(
                     Screens.Splash.route,
-                    Screens.Login.route
+                    Screens.Login.route,
+                    Screens.Register.route // 👈 Asegurate de agregar esto si no está
                 )
                 val navBackStackEntry = navController.currentBackStackEntryAsState()
                 val currentRoute = navBackStackEntry.value?.destination?.route

@@ -2,6 +2,11 @@ package com.example.nutrifit.ui.screens.profile
 
 import android.content.Context
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import com.example.nutrifit.ui.screens.Screens
@@ -13,11 +18,26 @@ import com.google.firebase.auth.FirebaseAuth
 fun ProfileRoute(navController: NavHostController) {
     val context = LocalContext.current
     val user = FirebaseAuth.getInstance().currentUser
-    val userName = user?.displayName ?: "Usuario"
     val userEmail = user?.email ?: "Correo no disponible"
+    val uid = user?.uid
+
+    var nombreUsuario by remember { mutableStateOf("Cargando...") }
+
+    LaunchedEffect(uid) {
+        uid?.let {
+            val db = com.google.firebase.firestore.FirebaseFirestore.getInstance()
+            db.collection("usuarios").document(it).get()
+                .addOnSuccessListener { document ->
+                    nombreUsuario = document.getString("nombre") ?: "Usuario"
+                }
+                .addOnFailureListener {
+                    nombreUsuario = "Usuario"
+                }
+        }
+    }
 
     ProfileScreen(
-        userName = userName,
+        userName = nombreUsuario,
         userEmail = userEmail,
         onLogoutClick = {
             logout(context, navController)

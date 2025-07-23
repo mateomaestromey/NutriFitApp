@@ -26,7 +26,7 @@ fun NutriFitUiItem(
     onClick: (String) -> Unit,
     favoritosViewModel: FavoritosViewModel
 ) {
-    val isFavorito by favoritosViewModel.isFavorite(nutriFit.id).collectAsState()
+    val isFavorito by favoritosViewModel.esFavorito(nutriFit.id).collectAsState()
 
     Card(
         modifier = modifier
@@ -77,9 +77,9 @@ fun NutriFitUiItem(
             IconButton(
                 onClick = {
                     if (isFavorito) {
-                        favoritosViewModel.removeFromFavorites(nutriFit.id)
+                        favoritosViewModel.eliminarDeFavoritos(nutriFit.id)
                     } else {
-                        favoritosViewModel.addToFavorites(nutriFit.id)
+                        favoritosViewModel.agregarAFavoritos(nutriFit.id)
                     }
                 }
             ) {

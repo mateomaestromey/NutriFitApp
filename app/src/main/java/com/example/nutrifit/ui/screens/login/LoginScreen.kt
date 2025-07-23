@@ -1,6 +1,6 @@
 package com.example.nutrifit.ui.screens.login
 
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.compose.foundation.BorderStroke
@@ -8,7 +8,6 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.*
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
@@ -18,6 +17,7 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.nutrifit.R
 import com.example.nutrifit.ui.screens.Screens
+import kotlinx.coroutines.flow.collectLatest
 
 @Composable
 fun LoginScreen(
@@ -25,21 +25,25 @@ fun LoginScreen(
     modifier: Modifier = Modifier,
     navController: NavHostController,
     vm: LoginScreenViewModel = viewModel()
-
-){
+) {
+    var email by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+    var errorText by remember { mutableStateOf<String?>(null) }
 
     LaunchedEffect(Unit) {
-        vm.uiEvent.collect{
-            event ->
-            navController.navigate(Screens.NutriFitList.route){
-                popUpTo(Screens.Login.route) {inclusive = true }
+        vm.uiEvent.collectLatest { event ->
+            when (event) {
+                "loginOK" -> navController.navigate(Screens.NutriFitList.route) {
+                    popUpTo(Screens.Login.route) { inclusive = true }
+                }
+                else -> errorText = event
             }
         }
     }
 
     Surface(
         modifier = Modifier.fillMaxSize(),
-        color = Color(0xFFFAF9F6) // Fondo general crema claro
+        color = Color(0xFFFAF9F6)
     ) {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -47,18 +51,14 @@ fun LoginScreen(
             modifier = Modifier
                 .padding(horizontal = 32.dp)
         ) {
-            // Logo
             Image(
                 painter = painterResource(id = R.drawable.nutrifit_logo),
                 contentDescription = "NutriFit Logo",
-                modifier = Modifier
-                    .width(300.dp)
-                    .padding(bottom = 0.dp) // Más pegado
+                modifier = Modifier.width(300.dp)
             )
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            // Título
             Text(
                 text = "Iniciar Sesión",
                 fontSize = 24.sp,
@@ -68,21 +68,19 @@ fun LoginScreen(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Usuario
             OutlinedTextField(
-                value = "",
-                onValueChange = {},
-                label = { Text("Nombre de usuario") },
+                value = email,
+                onValueChange = { email = it },
+                label = { Text("Correo electrónico") },
                 shape = RoundedCornerShape(12.dp),
                 modifier = Modifier.fillMaxWidth()
             )
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Contraseña
             OutlinedTextField(
-                value = "",
-                onValueChange = {},
+                value = password,
+                onValueChange = { password = it },
                 label = { Text("Contraseña") },
                 shape = RoundedCornerShape(12.dp),
                 modifier = Modifier.fillMaxWidth()
@@ -90,7 +88,6 @@ fun LoginScreen(
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            // Olvidaste contraseña
             Text(
                 text = "¿Olvidaste tu contraseña?",
                 color = Color(0xFF2D5B50),
@@ -100,9 +97,12 @@ fun LoginScreen(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Botón Iniciar Sesión
             Button(
-                onClick = {},
+                onClick = {
+                    vm.email = email
+                    vm.password = password
+                    vm.loginWithEmail()
+                },
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2D5B50)),
                 shape = RoundedCornerShape(12.dp),
                 modifier = Modifier
@@ -114,17 +114,17 @@ fun LoginScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            // Registrarse
-            Text(
-                text = "Registrarse",
-                color = Color(0xFF2D5B50),
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Medium
-            )
+            TextButton(onClick = { navController.navigate(Screens.Register.route) }) {
+                Text(
+                    text = "Registrarse",
+                    color = Color(0xFF2D5B50),
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Medium
+                )
+            }
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Botón Google
             OutlinedButton(
                 onClick = onGoogleLoginClick,
                 border = BorderStroke(1.dp, Color(0xFF2D5B50)),
@@ -135,7 +135,7 @@ fun LoginScreen(
             ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Icon(
-                        painter = painterResource(id = R.drawable.logo_google), // Icono de Google
+                        painter = painterResource(id = R.drawable.logo_google),
                         contentDescription = "Google Icon",
                         tint = Color.Unspecified,
                         modifier = Modifier.size(24.dp)
@@ -148,7 +148,11 @@ fun LoginScreen(
                     )
                 }
             }
+
+            errorText?.let {
+                Spacer(modifier = Modifier.height(16.dp))
+                Text(text = it, color = Color.Red)
+            }
         }
     }
-
 }
